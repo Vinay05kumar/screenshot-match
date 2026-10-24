@@ -134,7 +134,8 @@ export function buildMockStore(): MockStore {
   for (const [category, items] of Object.entries(CATALOG)) {
     for (const [name, basePrice] of items) {
       const prefix = category.slice(0, 3).toUpperCase();
-      const stock = weighted<number, string>([[int(0, 5), 12], [int(6, 40), 38], [int(41, 200), 50]] as never) as number;
+      // ~15% of products sit at or below the low-stock threshold (5, inclusive).
+      const stock = rand() < 0.15 ? int(0, LOW_STOCK_THRESHOLD) : int(6, 200);
       const price = basePrice + int(-2, 2) * 10;
       products.push({
         sku: `CS-${prefix}-${String(skuIndex).padStart(3, "0")}`,
